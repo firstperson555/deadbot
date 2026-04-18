@@ -143,7 +143,7 @@ def get_router(bot: Bot) -> Router:
             "• 1000 — 100 Stars\n"
             "• 5000 — 500 Stars\n"
             "• 10000 — 1000 Stars\n\n"
-            "📢 Наш канал: https://t.me/deadbothelp\n\n"
+            "📢 Наш канал с помощью в переводе звёзд: https://t.me/deadbothelp\n\n"
             "💳 Для оплаты услуг переведите Stars "
             "на @byesocial"
         )
