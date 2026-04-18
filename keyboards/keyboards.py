@@ -21,6 +21,10 @@ def get_platform_keyboard():
     """Platform selection keyboard"""
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
+        text="Instagram",
+        callback_data="platform_instagram"
+    ))
+    builder.add(InlineKeyboardButton(
         text="TikTok",
         callback_data="platform_tiktok"
     ))

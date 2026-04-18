@@ -66,12 +66,30 @@ def validate_youtube_link(link: str) -> bool:
     return any(re.match(pattern, link) for pattern in patterns)
 
 
+def validate_instagram_link(link: str) -> bool:
+    """Validate Instagram link format"""
+    patterns = [
+        r'https?://(www\.)?instagram\.com/[\w.]+',
+        r'https?://(www\.)?instagram\.com/p/[\w-]+',
+        r'https?://(www\.)?instagram\.com/reel/[\w-]+',
+        r'https?://(www\.)?instagram\.com/reels/[\w-]+'
+    ]
+    return any(re.match(pattern, link) for pattern in patterns)
+
+
 def get_link_request_text(platform: str, service: str) -> str:
     """Generate dynamic link request text based on platform and service"""
     platform_lower = platform.lower()
     service_lower = service.lower()
 
-    if platform_lower == "tiktok":
+    if platform_lower == "instagram":
+        if "просмотры" in service_lower:
+            return "🔗 Отправьте ссылку на Instagram пост или профиль:"
+        elif "лайки" in service_lower:
+            return "🔗 Отправьте ссылку на Instagram пост:"
+        elif "подписчики" in service_lower:
+            return "🔗 Отправьте ссылку на Instagram профиль:"
+    elif platform_lower == "tiktok":
         if "просмотры" in service_lower:
             return "🔗 Отправьте ссылку на TikTok видео или профиль:"
         elif "лайки" in service_lower:
@@ -111,11 +129,11 @@ def get_router(bot: Bot) -> Router:
 
         welcome_text = (
             "👋 Добро пожаловать в DeadBoot\n\n"
-            "Мы — приватный сервис продвижения в TikTok, "
-            "Telegram и YouTube.\n\n"
+            "Мы — приватный сервис продвижения в Instagram, "
+            "TikTok, Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "� Цены:\n"
+            "💰 Цены:\n"
             "• 1000 — 100 Stars\n"
             "• 5000 — 500 Stars\n"
             "• 10000 — 1000 Stars\n\n"
@@ -132,6 +150,7 @@ def get_router(bot: Bot) -> Router:
         help_text = (
             "ℹ️ Справка DeadBoot\n\n"
             "📊 Поддерживаемые платформы:\n"
+            "• Instagram (основной)\n"
             "• TikTok\n"
             "• Telegram\n"
             "• YouTube\n\n"
@@ -143,7 +162,7 @@ def get_router(bot: Bot) -> Router:
             "• 1000 — 100 Stars\n"
             "• 5000 — 500 Stars\n"
             "• 10000 — 1000 Stars\n\n"
-            "📢 Наш канал с помощью в переводе звёзд: https://t.me/deadbothelp\n\n"
+            "📢 Наш канал: https://t.me/deadbothelp\n\n"
             "💳 Для оплаты услуг переведите Stars "
             "на @byesocial"
         )
@@ -168,6 +187,7 @@ def get_router(bot: Bot) -> Router:
         about_text = (
             "ℹ️ О сервисе DeadBoot\n\n"
             "📊 Поддерживаемые платформы:\n"
+            "• Instagram (основной)\n"
             "• TikTok\n"
             "• Telegram\n"
             "• YouTube\n\n"
@@ -193,11 +213,11 @@ def get_router(bot: Bot) -> Router:
 
         await callback.message.edit_text(
             "👋 Добро пожаловать в DeadBoot\n\n"
-            "Мы — приватный сервис продвижения в TikTok, "
-            "Telegram и YouTube.\n\n"
+            "Мы — приватный сервис продвижения в Instagram, "
+            "TikTok, Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "� Цены:\n"
+            "💰 Цены:\n"
             "• 1000 — 100 Stars\n"
             "• 5000 — 500 Stars\n"
             "• 10000 — 1000 Stars\n\n"
@@ -216,11 +236,11 @@ def get_router(bot: Bot) -> Router:
         await callback.message.edit_text(
             "❌ Заказ отменён.\n\n"
             "👋 Добро пожаловать в DeadBoot\n\n"
-            "Мы — приватный сервис продвижения в TikTok, "
-            "Telegram и YouTube.\n\n"
+            "Мы — приватный сервис продвижения в Instagram, "
+            "TikTok, Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "� Цены:\n"
+            "💰 Цены:\n"
             "• 1000 — 100 Stars\n"
             "• 5000 — 500 Stars\n"
             "• 10000 — 1000 Stars\n\n"
@@ -242,6 +262,7 @@ def get_router(bot: Bot) -> Router:
         """Handle platform selection"""
         platform = callback.data.replace("platform_", "")
         platform_names = {
+            "instagram": "Instagram",
             "tiktok": "TikTok",
             "telegram": "Telegram",
             "youtube": "YouTube"
@@ -335,7 +356,16 @@ def get_router(bot: Bot) -> Router:
         is_valid = False
         error_msg = ""
 
-        if platform == "tiktok":
+        if platform == "instagram":
+            if validate_instagram_link(link):
+                is_valid = True
+            else:
+                error_msg = (
+                    "❌ Некорректная ссылка Instagram.\n"
+                    "Формат: https://instagram.com/username "
+                    "или https://instagram.com/p/..."
+                )
+        elif platform == "tiktok":
             if validate_tiktok_link(link):
                 is_valid = True
             else:
