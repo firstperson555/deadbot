@@ -2,7 +2,7 @@ import logging
 import re
 from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 
 from states.states import OrderStates
@@ -115,14 +115,40 @@ def get_router(bot: Bot) -> Router:
             "Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "🔒 Наш сервис работает по предоплате. "
-            "Мы не даём 100% гарантий из-за особенностей "
-            "алгоритмов платформ, но используем только "
-            "надёжные методы.\n\n"
+            "� Цены:\n"
+            "• 1000 — 100 Stars\n"
+            "• 5000 — 500 Stars\n"
+            "• 10000 — 1000 Stars\n\n"
+            "💎 Услуги: Просмотры, Лайки, Подписчики\n\n"
+            "ℹ️ Справка: /help\n\n"
             "Выберите услугу ниже:"
         )
 
         await message.answer(welcome_text, reply_markup=get_main_menu_keyboard())
+
+    @router.message(Command("help"))
+    async def cmd_help(message: Message):
+        """Handle /help command"""
+        help_text = (
+            "ℹ️ Справка DeadBoot\n\n"
+            "📊 Поддерживаемые платформы:\n"
+            "• TikTok\n"
+            "• Telegram\n"
+            "• YouTube\n\n"
+            "💎 Услуги:\n"
+            "• Просмотры\n"
+            "• Лайки\n"
+            "• Подписчики\n\n"
+            "💰 Цены:\n"
+            "• 1000 — 100 Stars\n"
+            "• 5000 — 500 Stars\n"
+            "• 10000 — 1000 Stars\n\n"
+            "📢 Наш канал: https://t.me/deadbothelp\n\n"
+            "💳 Для оплаты услуг переведите Stars "
+            "на @byesocial"
+        )
+
+        await message.answer(help_text)
 
     @router.callback_query(F.data == "start_order")
     async def callback_start_order(callback: CallbackQuery, state: FSMContext):
@@ -171,10 +197,12 @@ def get_router(bot: Bot) -> Router:
             "Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "🔒 Фиксированные цены за услуги. "
-            "Мы не даём 100% гарантий из-за особенностей "
-            "алгоритмов платформ, но используем только "
-            "надёжные методы.\n\n"
+            "� Цены:\n"
+            "• 1000 — 100 Stars\n"
+            "• 5000 — 500 Stars\n"
+            "• 10000 — 1000 Stars\n\n"
+            "💎 Услуги: Просмотры, Лайки, Подписчики\n\n"
+            "ℹ️ Справка: /help\n\n"
             "Выберите услугу ниже:",
             reply_markup=get_main_menu_keyboard()
         )
@@ -192,10 +220,12 @@ def get_router(bot: Bot) -> Router:
             "Telegram и YouTube.\n\n"
             "✨ Работаем только с проверенными методами "
             "и закрытыми алгоритмами.\n\n"
-            "🔒 Фиксированные цены за услуги. "
-            "Мы не даём 100% гарантий из-за особенностей "
-            "алгоритмов платформ, но используем только "
-            "надёжные методы.\n\n"
+            "� Цены:\n"
+            "• 1000 — 100 Stars\n"
+            "• 5000 — 500 Stars\n"
+            "• 10000 — 1000 Stars\n\n"
+            "💎 Услуги: Просмотры, Лайки, Подписчики\n\n"
+            "ℹ️ Справка: /help\n\n"
             "Выберите услугу ниже:",
             reply_markup=get_main_menu_keyboard()
         )
