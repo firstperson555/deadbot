@@ -1,12 +1,16 @@
 import asyncio
 import logging
+import os
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from handlers import get_router
 
 # Bot configuration
-BOT_TOKEN = "7588478024:AAHUd6_2ntEUmVOvl5UGtnAe8wnB8WDdjD0"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN environment variable is not set")
 
 # Configure logging
 logging.basicConfig(
