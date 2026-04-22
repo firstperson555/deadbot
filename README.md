@@ -1,81 +1,56 @@
-# DeadBoot - Telegram Bot
+# DeadBoot - Virtual Numbers Bot
 
-Приватный сервис продвижения в TikTok, Telegram и YouTube на aiogram 3.x.
+Telegram bot for selling virtual phone numbers based on real SIM cards.
 
-## Установка локально
+## Deployment on Railway via GitHub
 
-1. Клонируйте репозиторий:
-```bash
-git clone https://github.com/ВАШ_USERNAME/deadbot.git
-cd deadbot
+### Step 1: Push to GitHub
+
+1. Open GitHub Desktop
+2. Click "Fetch origin" to get the latest changes
+3. Click "Commit to main" to commit your changes
+4. Click "Push origin" to push to GitHub
+
+### Step 2: Set up Railway
+
+1. Go to [railway.app](https://railway.app)
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Select your repository
+4. Railway will automatically detect it's a Python project
+
+### Step 3: Add Environment Variables
+
+In Railway project settings, add these environment variables:
+
+- `BOT_TOKEN` - Your Telegram bot token from @BotFather
+- `ADMIN_ID` - Your Telegram user ID (default: 7846160465)
+
+### Step 4: Deploy
+
+1. Click "Deploy" in Railway
+2. Railway will automatically build and deploy your bot
+3. Future pushes to GitHub will trigger automatic deployments
+
+### Local Development
+
+Create a `.env` file in the project root:
+
+```
+BOT_TOKEN=your_bot_token_here
+ADMIN_ID=7846160465
 ```
 
-2. Установите зависимости:
+Then run:
+
 ```bash
 pip install -r requirements.txt
+python bot.py
 ```
 
-3. Установите переменную окружения:
-```bash
-export BOT_TOKEN="7588478024:AAHUd6_2ntEUmVOvl5UGtnAe8wnB8WDdjD0"
-```
+## Project Structure
 
-4. Запустите бота:
-```bash
-python main.py
-```
-
-## Развертывание на Railway
-
-1. Зайдите на [railway.app](https://railway.app) и авторизуйтесь через GitHub
-
-2. Создайте новый проект:
-   - Нажмите "New Project"
-   - Выберите "Deploy from GitHub repo"
-   - Выберите ваш репозиторий `deadbot`
-
-3. Добавьте переменные окружения:
-   - В настройках проекта перейдите в "Variables"
-   - Добавьте переменную `BOT_TOKEN` со значением вашего токена бота
-   - `BOT_TOKEN=7588478024:AAHUd6_2ntEUmVOvl5UGtnAe8wnB8WDdjD0`
-
-4. Разверните проект:
-   - Railway автоматически определит Python проект
-   - Нажмите "Deploy"
-
-5. Бот будет доступен 24/7
-
-## Структура проекта
-
-```
-deadbot/
-├── main.py              # Главный файл запуска
-├── requirements.txt     # Зависимости
-├── Procfile            # Конфигурация для Railway
-├── railway.json        # Конфигурация Railway
-├── handlers/           # Обработчики
-│   ├── __init__.py
-│   └── router.py
-├── states/             # FSM состояния
-│   ├── __init__.py
-│   └── states.py
-└── keyboards/          # Клавиатуры
-    ├── __init__.py
-    └── keyboards.py
-```
-
-## Функции
-
-- Выбор платформы (TikTok, Telegram, YouTube)
-- Выбор услуги (Просмотры, Лайки, Подписчики)
-- Валидация ссылок для каждой платформы
-- Фиксированные количества (1000, 5000, 10000)
-- Фиксированные цены (100, 500, 1000 Stars)
-- Система отмены заказа
-- Админ-панель для одобрения/отклонения заказов
-- Логирование всех действий
-
-## Админ
-
-- **ID:** 7846160465
-- **Username:** @nev3rdead
+- `bot.py` - Main bot file
+- `requirements.txt` - Python dependencies
+- `Procfile` - Railway deployment configuration
+- `railway.json` - Railway project configuration
+- `.gitignore` - Git ignore rules
