@@ -112,8 +112,8 @@ def get_back_keyboard():
 @dp.message(CommandStart())
 async def cmd_start(message: types.Message):
     text = (
-        "🚀 <b>DeadBoot — виртуальные номера</b>\n\n"
-        "Предоставляем номера на базе реальных SIM-карт для Telegram. "
+        "🚀 <b>DeadBoot — физические номера</b>\n\n"
+        "Предоставляем номера с реальных SIM-карт для Telegram. "
         "Все номера не регистрировались в Telegram ранее.\n\n"
         "💰 <b>Цены:</b>\n"
         f"📦 Пакет 6 номеров — <b>{PACK_PRICE} ⭐️</b>\n"
@@ -142,7 +142,7 @@ async def how_it_works(callback: CallbackQuery):
     text = (
         "ℹ️ <b>Как это работает</b>\n\n"
         "🔹 <b>Что мы предлагаем:</b>\n"
-        "Виртуальные номера на базе реальных SIM-карт для регистрации в Telegram. "
+        "Физические номера с реальных SIM-карт для регистрации в Telegram. "
         "Номера не регистрировались в Telegram ранее.\n\n"
         "🔹 <b>Процесс заказа:</b>\n"
         "1. Выберите формат (пакет или одиночный номер)\n"
