@@ -20,6 +20,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize bot and dispatcher
+if not BOT_TOKEN:
+    raise RuntimeError("BOT_TOKEN is not set")
+
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 
@@ -27,7 +30,6 @@ dp = Dispatcher(storage=MemoryStorage())
 class OrderStates(StatesGroup):
     waiting_for_package_type = State()
     waiting_for_country = State()
-    waiting_for_quantity = State()
     waiting_for_payment = State()
 
 class AdminStates(StatesGroup):
@@ -80,14 +82,6 @@ def get_country_keyboard():
     builder.adjust(2)
     return builder.as_markup()
 
-def get_quantity_keyboard(max_qty: int):
-    builder = InlineKeyboardBuilder()
-    for i in range(1, max_qty + 1):
-        builder.add(InlineKeyboardButton(text=f"{i} шт.", callback_data=f"qty_{i}"))
-    builder.add(InlineKeyboardButton(text="◀️ Назад", callback_data="back_to_main"))
-    builder.adjust(3)
-    return builder.as_markup()
-
 def get_payment_keyboard(order_id: str):
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(text="✅ Я оплатил", callback_data=f"paid_{order_id}"))
@@ -112,8 +106,8 @@ def get_back_keyboard():
 @dp.message(CommandStart())
 async def cmd_start(message: types.Message):
     text = (
-        "🚀 <b>DeadBoot — номера на реальных SIM-картах</b>\n\n"
-        "Предоставляем номера на реальных SIM-картах для Telegram. "
+        "🚀 <b>DeadBoot — физические номера</b>\n\n"
+        "Доступ к номерам на реальных SIM-картах для Telegram. "
         "Все номера не регистрировались в Telegram ранее.\n\n"
         "💰 <b>Цены:</b>\n"
         f"📦 Пакет 6 номеров — <b>{PACK_PRICE} ⭐️</b>\n"
@@ -142,11 +136,11 @@ async def how_it_works(callback: CallbackQuery):
     text = (
         "ℹ️ <b>Как это работает</b>\n\n"
         "🔹 <b>Что мы предлагаем:</b>\n"
-        "Номера на реальных SIM-картах для регистрации в Telegram. "
-        "Номера не регистрировались в Telegram ранее.\n\n"
+        "Доступ к физическим номерам на реальных SIM-картах. "
+        "Подходят для регистрации в Telegram и не использовались там ранее.\n\n"
         "🔹 <b>Процесс заказа:</b>\n"
         "1. Выберите формат (пакет или одиночный номер)\n"
-        "2. Укажите страну и количество\n"
+        "2. Укажите страну\n"
         "3. Оплатите через @byesocial\n"
         "4. Получите номера после проверки оплаты\n\n"
         "🔹 <b>Гарантии:</b>\n"
@@ -211,16 +205,6 @@ async def select_country(callback: CallbackQuery, state: FSMContext):
         await state.update_data(quantity=1)
         await create_order(callback, state)
     
-    await callback.answer()
-
-@dp.callback_query(F.data.startswith("qty_"), OrderStates.waiting_for_quantity)
-async def select_quantity(callback: CallbackQuery, state: FSMContext):
-    quantity = int(callback.data.split("_")[1])
-    price = quantity * PRICE_PER_NUMBER
-    
-    await state.update_data(quantity=quantity, price=price)
-    
-    await create_order(callback, state)
     await callback.answer()
 
 async def create_order(callback: CallbackQuery, state: FSMContext):
@@ -410,11 +394,14 @@ async def admin_reject(callback: CallbackQuery):
 @dp.callback_query(F.data.startswith("admin_contact_"))
 async def admin_contact(callback: CallbackQuery):
     order_id = callback.data.split("_")[2]
-    
-    if order_id in orders:
-        user_id = orders[order_id]["user_id"]
-        username = orders[order_id].get("username", "не указан")
-        
+
+    if order_id not in orders:
+        await callback.answer("Заказ не найден", show_alert=True)
+        return
+
+    user_id = orders[order_id]["user_id"]
+    username = orders[order_id].get("username", "не указан")
+
     await callback.answer()
     try:
         await callback.message.edit_reply_markup(reply_markup=None)
@@ -422,7 +409,11 @@ async def admin_contact(callback: CallbackQuery):
         pass
     await bot.send_message(
         callback.message.chat.id,
-        f"💬 Связь с клиентом\n\nЗаказ #{order_id}\n@{username}\nID: {user_id}\n\nНапишите клиенту напрямую."
+        "💬 Связь с клиентом\n\n"
+        f"Заказ #{order_id}\n"
+        f"@{username}\n"
+        f"ID: {user_id}\n\n"
+        "Напишите клиенту напрямую."
     )
 
 # Message handler for non-photo messages in payment state
